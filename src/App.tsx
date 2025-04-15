@@ -7,11 +7,9 @@ import Dashboard from "./pages/Dashboard";
 import Pipeline from "./pages/Pipeline";
 import Leads from "./pages/Leads";
 import NotFound from "./pages/NotFound";
-import Login from "./pages/Login"; // 🔥 nova importação
-import Settings from "./pages/Settings"; // ⬅️ importa a nova página
+import Login from "./pages/Login";
+import Settings from "./pages/Settings";
 import AuthGuard from "@/components/auth/AuthGuard";
-
-
 
 const queryClient = new QueryClient();
 
@@ -22,14 +20,52 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/pipeline" element={<Pipeline />} />
-          <Route path="/leads" element={<Leads />} />
-          <Route path="/login" element={<Login />} /> {/* 🔥 nova rota */}
-          <Route path="/settings" element={<Settings />} /> {/* 👈 novo */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard"element={<AuthGuard><Dashboard /></AuthGuard>}/>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          {/* Rota pública */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Rotas protegidas */}
+          <Route
+            path="/"
+            element={
+              <AuthGuard>
+                <Dashboard />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <AuthGuard>
+                <Dashboard />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/pipeline"
+            element={
+              <AuthGuard>
+                <Pipeline />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/leads"
+            element={
+              <AuthGuard>
+                <Leads />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <AuthGuard>
+                <Settings />
+              </AuthGuard>
+            }
+          />
+
+          {/* Página não encontrada */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

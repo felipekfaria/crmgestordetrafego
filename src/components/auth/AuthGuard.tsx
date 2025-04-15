@@ -19,7 +19,7 @@ export default function AuthGuard({ children }: Props) {
       if (data.session) {
         setIsAuthenticated(true);
       } else {
-        navigate("/login");
+        navigate("/login", { replace: true }); // 👈 redireciona corretamente
       }
 
       setLoading(false);
