@@ -47,8 +47,7 @@ export default function Login() {
       toast.error("Erro ao criar conta.");
       console.error(error.message);
     } else {
-      toast.success("Conta criada com sucesso!");
-      navigate("/dashboard");
+      toast.success("Conta criada! Verifique seu e-mail para confirmar o acesso.");
     }
 
     setLoading(false);
