@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
@@ -12,6 +13,9 @@ export default function Login() {
 
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "" });
+
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [recoveryEmail, setRecoveryEmail] = useState("");
 
   const handleLogin = async () => {
     setLoading(true);
@@ -53,6 +57,20 @@ export default function Login() {
     setLoading(false);
   };
 
+  const handlePasswordReset = async () => {
+    const { error } = await supabase.auth.resetPasswordForEmail(recoveryEmail, {
+      redirectTo: `${window.location.origin}/update-password`
+    });
+
+    if (error) {
+      toast.error("Erro ao enviar e-mail de recuperação");
+    } else {
+      toast.success("E-mail de recuperação enviado!");
+      setShowForgotPassword(false);
+      setRecoveryEmail("");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
@@ -78,6 +96,12 @@ export default function Login() {
                 value={loginData.password}
                 onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
               />
+              <p
+                className="text-sm text-leadflow-blue hover:underline text-right cursor-pointer"
+                onClick={() => setShowForgotPassword(true)}
+              >
+                Esqueceu a sua senha?
+              </p>
               <Button
                 className="w-full bg-leadflow-blue text-white"
                 onClick={handleLogin}
@@ -118,6 +142,29 @@ export default function Login() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Modal de recuperação de senha */}
+      <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Recuperar senha</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-gray-500 mb-4">Digite o e-mail cadastrado para receber o link de redefinição de senha.</p>
+          <Input
+            type="email"
+            placeholder="seuemail@exemplo.com"
+            value={recoveryEmail}
+            onChange={(e) => setRecoveryEmail(e.target.value)}
+          />
+          <Button
+            className="mt-4 w-full bg-leadflow-blue text-white"
+            onClick={handlePasswordReset}
+            disabled={!recoveryEmail}
+          >
+            Enviar link
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
