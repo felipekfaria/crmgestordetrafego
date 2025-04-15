@@ -1,0 +1,112 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 215 25% 27%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 27%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 27%;
+
+    --primary: 217 100% 62%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 215 25% 27%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215 14% 57%;
+
+    --accent: 217 100% 62%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217 100% 62%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 215 30% 17%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 217 100% 62%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 30% 22%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 215 30% 22%;
+    --sidebar-ring: 217 100% 62%;
+  }
+
+  .dark {
+    --background: 215 30% 17%;
+    --foreground: 0 0% 100%;
+
+    --card: 215 30% 22%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 215 30% 17%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 217 100% 62%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 30% 22%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 215 30% 22%;
+    --muted-foreground: 215 14% 57%;
+
+    --accent: 217 100% 62%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 30% 22%;
+    --input: 215 30% 22%;
+    --ring: 217 100% 62%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Custom styles for the LeadFlow app */
+  .kanban-column {
+    @apply bg-leadflow-light-gray rounded-md px-3 py-2 min-h-[600px] w-full min-w-[280px];
+  }
+
+  .lead-card {
+    @apply bg-white rounded-md p-4 shadow-sm mb-3 cursor-pointer hover:shadow-md transition-shadow;
+  }
+
+  .follow-up-reminder {
+    @apply text-xs font-medium py-1 px-2 rounded-full bg-opacity-20;
+  }
+
+  .follow-up-overdue {
+    @apply bg-red-200 text-red-800;
+  }
+
+  .follow-up-today {
+    @apply bg-yellow-200 text-yellow-800;
+  }
+
+  .follow-up-upcoming {
+    @apply bg-blue-200 text-blue-800;
+  }
+}
