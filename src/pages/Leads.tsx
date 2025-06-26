@@ -81,7 +81,7 @@ const Leads = () => {
         lead =>
           lead.lead_name.toLowerCase().includes(term) ||
           lead.company.toLowerCase().includes(term) ||
-          lead.lead_email.toLowerCase().includes(term) ||
+          lead.email.toLowerCase().includes(term) ||
           lead.phone.includes(term)
       );
     }

@@ -197,7 +197,7 @@ export default function LeadDetails({
         <div className="flex justify-between text-sm text-gray-600 mb-4">
           <div className="flex items-center gap-1">
             <Mail size={14} />
-            <span>{lead.lead_email}</span>
+            <span>{lead.email}</span>
           </div>
 
           <div className="flex-1" />
@@ -324,7 +324,7 @@ export default function LeadDetails({
             <ProposalsTab
               leadId={lead.id}
               leadName={lead.lead_name}
-              leadEmail={lead.lead_email}
+              leadEmail={lead.email}
               leadPhone={lead.phone}
               leadCompany={lead.company}
               leadValue={lead.value}

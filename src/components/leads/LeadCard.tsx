@@ -11,7 +11,7 @@ export interface Lead {
   id: number;
   user_id: string;
   lead_name: string;
-  lead_email: string;
+  email: string;
   company: string;
   phone: string;
   value: number;

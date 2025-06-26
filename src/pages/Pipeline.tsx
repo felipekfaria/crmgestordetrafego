@@ -96,7 +96,7 @@ useEffect(() => {
         .from("leads")
         .update({
           lead_name: leadData.lead_name,
-          lead_email: leadData.lead_email,
+          email: leadData.email,
           followUpDate: leadData.followUpDate,
           company: leadData.company,
           value: leadData.value,
@@ -119,7 +119,7 @@ useEffect(() => {
     } else {
       const newLead = {
         lead_name: leadData.lead_name || "",
-        lead_email: leadData.lead_email || "",
+        email: leadData.email || "",
         followUpDate: leadData.followUpDate || null,
         user_id: user.id,
         company: leadData.company || "",

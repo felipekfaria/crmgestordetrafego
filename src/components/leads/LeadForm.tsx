@@ -38,7 +38,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, onSave, lead }) =>
   const [formData, setFormData] = React.useState<Partial<Lead & { valueText?: string }>>({
     lead_name: "",
     company: "",
-    lead_email: "",
+    email: "",
     phone: "",
     value: 0,
     valueText: "",
@@ -59,7 +59,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, onSave, lead }) =>
       setFormData({
         lead_name: "",
         company: "",
-        lead_email: "",
+        email: "",
         phone: "",
         value: 0,
         valueText: "",
@@ -142,12 +142,12 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, onSave, lead }) =>
             </div>
 
             <div>
-              <Label htmlFor="lead_email">Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="lead_email"
-                name="lead_email"
+                id="email"
+                name="email"
                 type="email"
-                value={formData.lead_email || ""}
+                value={formData.email || ""}
                 onChange={handleChange}
                 placeholder="Email do contato"
               />
