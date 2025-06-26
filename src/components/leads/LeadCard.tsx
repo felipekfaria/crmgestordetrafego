@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, telefone, DollarSign } from "lucide-react";
+import { Calendar, Phone, DollarSign } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Proposal } from "@/types";
