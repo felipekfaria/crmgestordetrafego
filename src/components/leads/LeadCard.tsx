@@ -4,22 +4,34 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Proposal } from "@/types";
 
-// Types for our lead data
+// Tipagem para o status (está correto)
 export type LeadStatus = "new" | "contacted" | "proposal" | "won" | "lost";
 
+// ================== AQUI ESTÁ A MUDANÇA PRINCIPAL ==================
+// Interface 100% sincronizada com sua tabela no Supabase
 export interface Lead {
   id: number;
   user_id: string;
   lead_name: string;
   email: string;
-  company: string;
-  telefone: string;
   value: number;
   status: LeadStatus;
-  followUpDate: Date | null; // <-- Corrija isso aqui
   created_at: string;
-  proposals?: Proposal[]; // <- corrigido
+  
+  // Colunas que podem ser nulas (NULL no banco de dados)
+  company: string | null; 
+  telefone: string | null;
+  followUpDate: Date | string | null;
+
+  // Colunas adicionais da sua tabela
+  instagram: string | null;
+  origem: string | null;
+  conversion_co: string | null;
+
+  // Propriedade para dados de tabelas relacionadas (não é uma coluna direta)
+  proposals?: Proposal[]; 
 }
+// ===================================================================
 
 interface LeadCardProps {
   lead: Lead;
@@ -46,7 +58,8 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
     locale: ptBR
   });
 
-  const whatsappLink = `https://wa.me/${(telefone || '').replace(/\D/g, '')}`;
+  // Esta linha já estava correta, e agora a interface "Lead" também está
+  const whatsappLink = `https://wa.me/${(lead.telefone || '').replace(/\D/g, '')}`;
 
   return (
     <div className="lead-card group" onClick={() => onClick(lead)}>
@@ -64,7 +77,7 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
           onClick={(e) => e.stopPropagation()}
           className="p-2 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
         >
-          <telefone size={16} />
+          <Phone size={16} />
         </a>
       </div>
 

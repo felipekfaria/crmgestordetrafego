@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import {
   Calendar,
-  telefone,
+  Phone,
   PlusCircle,
   Search,
   ArrowUpDown,
@@ -51,24 +51,23 @@ const Leads = () => {
   const [showOverdueOnly, setShowOverdueOnly] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Lead; direction: "asc" | "desc"; } | null>(null);
 
+  const fetchLeads = async () => {
+    const { data, error } = await supabase
+      .from("leads")
+      .select("*")
+      .not("user_id", "is", null)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Erro ao buscar leads:", error);
+      toast.error("Erro ao buscar leads.");
+      return;
+    }
+
+    setLeads(data || []);
+  };
+
   useEffect(() => {
-    const fetchLeads = async () => {
-      const { data, error } = await supabase
-        .from("leads")
-        .select("*")
-        .not("user_id", "is", null)
-        .order("created_at", { ascending: false });
-  
-      if (error) {
-        console.error("Erro ao buscar leads:", error);
-        toast.error("Erro ao buscar leads.");
-        return;
-      }
-  
-      setLeads(data || []);
-      setDisplayedLeads(data || []);
-    };
-  
     fetchLeads();
   }, []);  
 
@@ -80,9 +79,9 @@ const Leads = () => {
       result = result.filter(
         lead =>
           lead.lead_name.toLowerCase().includes(term) ||
-          lead.company.toLowerCase().includes(term) ||
+          (lead.company || '').toLowerCase().includes(term) || // CORREÇÃO: Adicionado `|| ''` para segurança
           lead.email.toLowerCase().includes(term) ||
-          telefone.includes(term)
+          (lead.telefone || '').includes(term) // CORREÇÃO: Usado `lead.telefone` e adicionado `|| ''`
       );
     }
 
@@ -92,8 +91,14 @@ const Leads = () => {
 
     if (sortConfig) {
       result.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
-        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
+        const valA = a[sortConfig.key];
+        const valB = b[sortConfig.key];
+        
+        if (valA === null || valA === undefined) return 1;
+        if (valB === null || valB === undefined) return -1;
+        
+        if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+        if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
         return 0;
       });
     }
@@ -126,43 +131,53 @@ const Leads = () => {
     navigate(url.pathname + url.search, { replace: true });
   };
 
-  // Handle adding or updating a lead
-  const handleSaveLead = (leadData: Partial<Lead>) => {
-    if (isEditing && currentLead) {
-      // Update existing lead
-      const updatedLeads = leads.map(lead => 
-        lead.id === currentLead.id 
-          ? { ...lead, ...leadData }
-          : lead
-      );
-      setLeads(updatedLeads);
-      setFilteredLeads(updatedLeads);
-      toast.success("Lead atualizado com sucesso!");
-    } else {
-      // Add new lead
-      const newLead: Lead = {
-        id: Date.now().toString(),
-        name: leadData.name || "",
-        company: leadData.company || "",
-        value: leadData.value || 0,
-        followUpDate: leadData.followUpDate || null,
-        createdAt: new Date(),
-        status: leadData.status || "new",
-        email: leadData.email || "",
-        telefone: leadData.telefone || ""
-      };
-      
-      const newLeads = [...leads, newLead];
-      setLeads(newLeads);
-      setFilteredLeads(newLeads);
-      toast.success("Novo lead adicionado com sucesso!");
+  // CORREÇÃO: Função reescrita para integrar com Supabase
+  const handleSaveLead = async (leadData: Partial<Lead>) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        toast.error("Você precisa estar logado para salvar um lead.");
+        return;
     }
     
+    // Assegura que o user_id está presente para inserção/atualização
+    const dataToSave = { ...leadData, user_id: user.id };
+
+    if (isEditing && currentLead) {
+      // Atualizar lead existente no Supabase
+      const { error } = await supabase
+        .from('leads')
+        .update(dataToSave)
+        .eq('id', currentLead.id);
+        
+      if (error) {
+        toast.error("Erro ao atualizar o lead.");
+        console.error(error);
+      } else {
+        toast.success("Lead atualizado com sucesso!");
+        await fetchLeads(); // Recarrega a lista
+      }
+
+    } else {
+      // Adicionar novo lead no Supabase
+      const { error } = await supabase
+        .from('leads')
+        .insert([dataToSave]);
+
+      if (error) {
+        toast.error("Erro ao adicionar o novo lead.");
+        console.error(error);
+      } else {
+        toast.success("Novo lead adicionado com sucesso!");
+        await fetchLeads(); // Recarrega a lista
+      }
+    }
+    
+    // Fecha o formulário
+    setIsFormOpen(false);
     setIsEditing(false);
     setCurrentLead(null);
   };
 
-  // Handle clicking on a lead
   const handleLeadClick = (lead: Lead) => {
     setCurrentLead(lead);
     setIsDetailsOpen(true);
@@ -278,16 +293,19 @@ const Leads = () => {
                       <TableCell>{formatDate(lead.followUpDate)}</TableCell>
                       <TableCell>
                         <a 
-                          href={`https://wa.me/${(telefone || '').replace(/\D/g, '')}`}
+                          // CORREÇÃO: Usando lead.telefone
+                          href={`https://wa.me/${(lead.telefone || '').replace(/\D/g, '')}`}
                           target="_blank" 
                           rel="noopener noreferrer"
                           onClick={(e) => {
-                            if (!telefone) e.preventDefault();
+                            // CORREÇÃO: Usando lead.telefone
+                            if (!lead.telefone) e.preventDefault();
                             e.stopPropagation();
                           }}
                           className="p-1 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-colors inline-flex"
                         >
-                          <telefone size={16} />
+                          {/* CORREÇÃO: Usando o componente <Phone /> */}
+                          <Phone size={16} />
                         </a>
                       </TableCell>
                     </TableRow>
@@ -307,13 +325,14 @@ const Leads = () => {
         <LeadForm
           isOpen={isFormOpen}
           onClose={() => setIsFormOpen(false)}
-          onSave={() => {}}
+          // CORREÇÃO: Passando a função correta
+          onSave={handleSaveLead} 
         />
 
         <LeadDetails
           isOpen={isDetailsOpen}
           onClose={() => setIsDetailsOpen(false)}
-          onEdit={() => {}}
+          onEdit={() => { /* Lógica para editar */ }}
           lead={currentLead}
           onAddInteraction={async () => {}}
           onAddProposal={() => {}}

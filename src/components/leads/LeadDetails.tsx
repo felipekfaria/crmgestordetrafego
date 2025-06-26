@@ -3,13 +3,13 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Lead } from "./LeadCard";
+import { Lead } from "./LeadCard"; // Assumindo que a interface Lead aqui tem a propriedade 'telefone'
 import ProposalsTab from "./ProposalsTab";
 import { format } from "date-fns";
 import {
   Calendar,
   Mail,
-  telefone,
+  Phone,
   Pencil,
   MessageCircle,
   Send,
@@ -50,6 +50,8 @@ interface LeadDetailsProps {
   onDeleteLead?: (leadId: number) => void;
 }
 
+// Nota: Certifique-se de que a sua interface 'Lead' (no arquivo LeadCard.tsx)
+// inclua a propriedade 'telefone', por exemplo: `telefone: string;`
 export default function LeadDetails({
   isOpen,
   onClose,
@@ -78,8 +80,10 @@ export default function LeadDetails({
       if (!error && data) setInteractions(data);
     };
 
-    fetchInteractions();
-  }, [lead]);
+    if (isOpen) {
+        fetchInteractions();
+    }
+  }, [lead, isOpen]);
 
   const handleAddInteraction = async () => {
     if (!message.trim() || !lead || !onAddInteraction) return;
@@ -161,7 +165,6 @@ export default function LeadDetails({
             <p className="text-sm text-gray-500">{lead.company}</p>
           </div>
           <div className="flex gap-2">
-            {/* Excluir antes do Editar */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button size="sm" variant="destructive">
@@ -193,7 +196,6 @@ export default function LeadDetails({
           </div>
         </div>
 
-        {/* email e telefone separados */}
         <div className="flex justify-between text-sm text-gray-600 mb-4">
           <div className="flex items-center gap-1">
             <Mail size={14} />
@@ -203,8 +205,9 @@ export default function LeadDetails({
           <div className="flex-1" />
 
           <div className="flex items-center gap-1 pr-40">
-            <telefone size={14} />
-            <span>{telefone}</span>
+            <Phone size={14} />
+            {/* CORREÇÃO AQUI: Usando lead.telefone em vez do componente Phone */}
+            <span>{lead.telefone}</span>
           </div>
         </div>
 
@@ -325,7 +328,8 @@ export default function LeadDetails({
               leadId={lead.id}
               leadName={lead.lead_name}
               leadEmail={lead.email}
-              leadtelefone={telefone}
+              // CORREÇÃO AQUI: Passando lead.telefone em vez de uma variável inexistente
+              leadtelefone={lead.telefone}
               leadCompany={lead.company}
               leadValue={lead.value}
               proposals={lead.proposals || []}
@@ -341,7 +345,8 @@ export default function LeadDetails({
             Fechar
           </Button>
           <a
-            href={`https://wa.me/${(telefone || '').replace(/\D/g, '')}`}
+            // CORREÇÃO AQUI: Usando lead.telefone para o link do WhatsApp
+            href={`https://wa.me/${(lead.telefone || '').replace(/\D/g, '')}`}
             target="_blank"
             rel="noopener noreferrer"
           >
