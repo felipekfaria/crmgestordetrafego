@@ -26,7 +26,7 @@ const PublicLeadForm = () => {
     setStatus('Enviando...');
 
     // ====================================================================
-    //      IMPORTANTE: SUBSTITUA OS VALORES DESTAS DUAS LINHAS
+    //      IMPORTANTE: SUBSTITUA OS VALORES DESTAS DUAS LINHASs
     // ====================================================================
 const FUNCTION_URL = 'https://jwptodwqseqqoccrmbob.supabase.co/functions/v1/add-public-lead';
 const SECRET_TOKEN = import.meta.env.VITE_SUPABASE_LEAD_FORM_TOKEN; 
