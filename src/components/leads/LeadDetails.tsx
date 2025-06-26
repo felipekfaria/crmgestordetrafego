@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import {
   Calendar,
   Mail,
-  Phone,
+  telefone,
   Pencil,
   MessageCircle,
   Send,
@@ -203,7 +203,7 @@ export default function LeadDetails({
           <div className="flex-1" />
 
           <div className="flex items-center gap-1 pr-40">
-            <Phone size={14} />
+            <telefone size={14} />
             <span>{telefone}</span>
           </div>
         </div>
@@ -325,7 +325,7 @@ export default function LeadDetails({
               leadId={lead.id}
               leadName={lead.lead_name}
               leadEmail={lead.email}
-              leadPhone={telefone}
+              leadtelefone={telefone}
               leadCompany={lead.company}
               leadValue={lead.value}
               proposals={lead.proposals || []}
@@ -341,7 +341,7 @@ export default function LeadDetails({
             Fechar
           </Button>
           <a
-            href={`https://wa.me/${telefone.replace(/\D/g, "")}`}
+            href={`https://wa.me/${(telefone || '').replace(/\D/g, '')}`}
             target="_blank"
             rel="noopener noreferrer"
           >

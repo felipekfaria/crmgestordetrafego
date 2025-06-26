@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import {
   Calendar,
-  Phone,
+  telefone,
   PlusCircle,
   Search,
   ArrowUpDown,
@@ -149,7 +149,7 @@ const Leads = () => {
         createdAt: new Date(),
         status: leadData.status || "new",
         email: leadData.email || "",
-        phone: leadData.phone || ""
+        telefone: leadData.telefone || ""
       };
       
       const newLeads = [...leads, newLead];
@@ -278,7 +278,7 @@ const Leads = () => {
                       <TableCell>{formatDate(lead.followUpDate)}</TableCell>
                       <TableCell>
                         <a 
-                          href={telefone ? `https://wa.me/${telefone.replace(/\D/g, '')}` : '#'}
+                          href={`https://wa.me/${(telefone || '').replace(/\D/g, '')}`}
                           target="_blank" 
                           rel="noopener noreferrer"
                           onClick={(e) => {
@@ -287,7 +287,7 @@ const Leads = () => {
                           }}
                           className="p-1 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-colors inline-flex"
                         >
-                          <Phone size={16} />
+                          <telefone size={16} />
                         </a>
                       </TableCell>
                     </TableRow>

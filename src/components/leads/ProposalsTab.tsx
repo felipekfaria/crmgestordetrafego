@@ -12,7 +12,7 @@ interface ProposalsTabProps {
   leadId: number;
   leadName: string;
   leadEmail: string;
-  leadPhone: string;
+  leadtelefone: string;
   leadCompany: string;
   leadValue: number;
   proposals: Proposal[];
@@ -25,7 +25,7 @@ export default function ProposalsTab({
   leadId,
   leadName,
   leadEmail,
-  leadPhone,
+  leadtelefone,
   leadCompany,
   leadValue,
   proposals,
@@ -134,7 +134,7 @@ export default function ProposalsTab({
                 <strong>Cliente:</strong> {leadName} ({leadCompany})
               </p>
               <p>
-                <strong>Contato:</strong> {leadEmail} | {leadPhone}
+                <strong>Contato:</strong> {leadEmail} | {leadtelefone}
               </p>
               <p>
                 <strong>Valor:</strong> R$ {leadValue.toLocaleString("pt-BR")}

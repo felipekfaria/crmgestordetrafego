@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, Phone, DollarSign } from "lucide-react";
+import { Calendar, telefone, DollarSign } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Proposal } from "@/types";
@@ -13,7 +13,7 @@ export interface Lead {
   lead_name: string;
   email: string;
   company: string;
-  phone: string;
+  telefone: string;
   value: number;
   status: LeadStatus;
   followUpDate: Date | null; // <-- Corrija isso aqui
@@ -46,7 +46,7 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
     locale: ptBR
   });
 
-  const whatsappLink = `https://wa.me/${telefone.replace(/\D/g, '')}`;
+  const whatsappLink = `https://wa.me/${(telefone || '').replace(/\D/g, '')}`;
 
   return (
     <div className="lead-card group" onClick={() => onClick(lead)}>
@@ -64,7 +64,7 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
           onClick={(e) => e.stopPropagation()}
           className="p-2 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
         >
-          <Phone size={16} />
+          <telefone size={16} />
         </a>
       </div>
 

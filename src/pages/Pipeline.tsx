@@ -123,7 +123,7 @@ useEffect(() => {
         followUpDate: leadData.followUpDate || null,
         user_id: user.id,
         company: leadData.company || "",
-        phone: leadData.phone || "",
+        telefone: leadData.telefone || "",
         value: leadData.value || 0,
         status: "new"
       };

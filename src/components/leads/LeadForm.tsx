@@ -39,7 +39,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, onSave, lead }) =>
     lead_name: "",
     company: "",
     email: "",
-    phone: "",
+    telefone: "",
     value: 0,
     valueText: "",
     status: "new" as LeadStatus,
@@ -60,7 +60,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, onSave, lead }) =>
         lead_name: "",
         company: "",
         email: "",
-        phone: "",
+        telefone: "",
         value: 0,
         valueText: "",
         status: "new" as LeadStatus,
@@ -154,11 +154,11 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, onSave, lead }) =>
             </div>
 
             <div>
-              <Label htmlFor="phone">Telefone/WhatsApp</Label>
+              <Label htmlFor="telefone">Telefone/WhatsApp</Label>
               <Input
-                id="phone"
-                name="phone"
-                value={formData.phone || ""}
+                id="telefone"
+                name="telefone"
+                value={formData.telefone || ""}
                 onChange={handleChange}
                 placeholder="Ex: (11) 98765-4321"
               />
