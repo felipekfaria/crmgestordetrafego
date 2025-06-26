@@ -7,6 +7,7 @@
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true, // ✅ adicionado para permitir o uso acima
     "isolatedModules": true,
     "moduleDetection": "force",
     "jsx": "react-jsx",
@@ -21,8 +22,7 @@
     },
     "composite": true,
     "declaration": true,
-    "outDir": "./dist",
-    "noEmit": false
+    "outDir": "./dist"
   },
   "include": ["src"]
 }

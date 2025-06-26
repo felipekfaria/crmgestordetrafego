@@ -10,9 +10,9 @@
     "allowJs": true,
     "noUnusedLocals": false,
     "strictNullChecks": false,
-    "jsx": "react-jsx", 
-    "composite": true, // <-- ADICIONE ISSO
-    "noEmit": true      // <-- ADICIONE ISSO também para manter coerência
+    "jsx": "react-jsx",
+    "composite": true,
+    "noEmit": true
   },
   "include": ["src"],
   "references": [
