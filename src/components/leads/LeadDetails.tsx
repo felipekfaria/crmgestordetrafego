@@ -204,7 +204,7 @@ export default function LeadDetails({
 
           <div className="flex items-center gap-1 pr-40">
             <Phone size={14} />
-            <span>{lead.phone}</span>
+            <span>{telefone}</span>
           </div>
         </div>
 
@@ -325,7 +325,7 @@ export default function LeadDetails({
               leadId={lead.id}
               leadName={lead.lead_name}
               leadEmail={lead.email}
-              leadPhone={lead.phone}
+              leadPhone={telefone}
               leadCompany={lead.company}
               leadValue={lead.value}
               proposals={lead.proposals || []}
@@ -341,7 +341,7 @@ export default function LeadDetails({
             Fechar
           </Button>
           <a
-            href={`https://wa.me/${lead.phone.replace(/\D/g, "")}`}
+            href={`https://wa.me/${telefone.replace(/\D/g, "")}`}
             target="_blank"
             rel="noopener noreferrer"
           >

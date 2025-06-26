@@ -46,7 +46,7 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick }) => {
     locale: ptBR
   });
 
-  const whatsappLink = `https://wa.me/${lead.phone.replace(/\D/g, '')}`;
+  const whatsappLink = `https://wa.me/${telefone.replace(/\D/g, '')}`;
 
   return (
     <div className="lead-card group" onClick={() => onClick(lead)}>

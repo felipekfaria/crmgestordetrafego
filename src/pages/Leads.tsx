@@ -82,7 +82,7 @@ const Leads = () => {
           lead.lead_name.toLowerCase().includes(term) ||
           lead.company.toLowerCase().includes(term) ||
           lead.email.toLowerCase().includes(term) ||
-          lead.phone.includes(term)
+          telefone.includes(term)
       );
     }
 
@@ -278,11 +278,11 @@ const Leads = () => {
                       <TableCell>{formatDate(lead.followUpDate)}</TableCell>
                       <TableCell>
                         <a 
-                          href={lead.phone ? `https://wa.me/${lead.phone.replace(/\D/g, '')}` : '#'}
+                          href={telefone ? `https://wa.me/${telefone.replace(/\D/g, '')}` : '#'}
                           target="_blank" 
                           rel="noopener noreferrer"
                           onClick={(e) => {
-                            if (!lead.phone) e.preventDefault();
+                            if (!telefone) e.preventDefault();
                             e.stopPropagation();
                           }}
                           className="p-1 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-colors inline-flex"
