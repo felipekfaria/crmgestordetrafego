@@ -52,10 +52,13 @@ const Leads = () => {
   const [sortConfig, setSortConfig] = useState<{ key: keyof Lead; direction: "asc" | "desc"; } | null>(null);
 
   const fetchLeads = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return; // Não busca leads se não houver usuário
+
     const { data, error } = await supabase
       .from("leads")
       .select("*")
-      .not("user_id", "is", null)
+      .eq('user_id', user.id) // Busca apenas os leads do usuário logado
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -67,10 +70,41 @@ const Leads = () => {
     setLeads(data || []);
   };
 
+  // Efeito para buscar os dados iniciais
   useEffect(() => {
     fetchLeads();
   }, []);  
 
+  // ====================================================================
+  //      NOVO BLOCO PARA REALTIME
+  // Este useEffect escuta por mudanças no banco de dados.
+  // ====================================================================
+  useEffect(() => {
+    const channel = supabase
+      .channel('realtime leads')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Escuta por qualquer evento: INSERT, UPDATE, DELETE
+          schema: 'public',
+          table: 'leads',
+        },
+        (payload) => {
+          console.log('Mudança no banco de dados recebida!', payload);
+          // A forma mais simples de atualizar a UI é buscar a lista novamente.
+          fetchLeads();
+        }
+      )
+      .subscribe();
+
+    // Função de limpeza para remover a inscrição quando o componente sair da tela
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []); // A dependência vazia [] faz com que isso rode apenas uma vez (na montagem do componente)
+  // ====================================================================
+
+  // Efeito para filtrar e ordenar a lista de leads exibida
   useEffect(() => {
     let result = [...leads];
 
@@ -79,9 +113,9 @@ const Leads = () => {
       result = result.filter(
         lead =>
           lead.lead_name.toLowerCase().includes(term) ||
-          (lead.company || '').toLowerCase().includes(term) || // CORREÇÃO: Adicionado `|| ''` para segurança
+          (lead.company || '').toLowerCase().includes(term) ||
           lead.email.toLowerCase().includes(term) ||
-          (lead.telefone || '').includes(term) // CORREÇÃO: Usado `lead.telefone` e adicionado `|| ''`
+          (lead.telefone || '').includes(term)
       );
     }
 
@@ -131,7 +165,6 @@ const Leads = () => {
     navigate(url.pathname + url.search, { replace: true });
   };
 
-  // CORREÇÃO: Função reescrita para integrar com Supabase
   const handleSaveLead = async (leadData: Partial<Lead>) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -139,11 +172,9 @@ const Leads = () => {
         return;
     }
     
-    // Assegura que o user_id está presente para inserção/atualização
     const dataToSave = { ...leadData, user_id: user.id };
 
     if (isEditing && currentLead) {
-      // Atualizar lead existente no Supabase
       const { error } = await supabase
         .from('leads')
         .update(dataToSave)
@@ -154,11 +185,10 @@ const Leads = () => {
         console.error(error);
       } else {
         toast.success("Lead atualizado com sucesso!");
-        await fetchLeads(); // Recarrega a lista
+        // Não precisa chamar fetchLeads() aqui, o Realtime cuidará disso.
       }
 
     } else {
-      // Adicionar novo lead no Supabase
       const { error } = await supabase
         .from('leads')
         .insert([dataToSave]);
@@ -168,11 +198,10 @@ const Leads = () => {
         console.error(error);
       } else {
         toast.success("Novo lead adicionado com sucesso!");
-        await fetchLeads(); // Recarrega a lista
+        // Não precisa chamar fetchLeads() aqui, o Realtime cuidará disso.
       }
     }
     
-    // Fecha o formulário
     setIsFormOpen(false);
     setIsEditing(false);
     setCurrentLead(null);
@@ -196,6 +225,7 @@ const Leads = () => {
     return parsedDate.toLocaleDateString("pt-BR");
   };  
 
+  // O resto do seu JSX permanece o mesmo
   return (
     <div className="min-h-screen bg-leadflow-light-gray">
       <Navbar />
@@ -293,18 +323,15 @@ const Leads = () => {
                       <TableCell>{formatDate(lead.followUpDate)}</TableCell>
                       <TableCell>
                         <a 
-                          // CORREÇÃO: Usando lead.telefone
                           href={`https://wa.me/${(lead.telefone || '').replace(/\D/g, '')}`}
                           target="_blank" 
                           rel="noopener noreferrer"
                           onClick={(e) => {
-                            // CORREÇÃO: Usando lead.telefone
                             if (!lead.telefone) e.preventDefault();
                             e.stopPropagation();
                           }}
                           className="p-1 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-colors inline-flex"
                         >
-                          {/* CORREÇÃO: Usando o componente <Phone /> */}
                           <Phone size={16} />
                         </a>
                       </TableCell>
@@ -325,7 +352,6 @@ const Leads = () => {
         <LeadForm
           isOpen={isFormOpen}
           onClose={() => setIsFormOpen(false)}
-          // CORREÇÃO: Passando a função correta
           onSave={handleSaveLead} 
         />
 
